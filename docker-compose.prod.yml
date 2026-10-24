@@ -1,0 +1,87 @@
+version: '3.9'
+
+# ==============================================================================
+# FIMMS Production Docker Compose (Using AWS RDS & AWS S3)
+# Local PostgreSQL container is omitted because database is hosted on Amazon RDS
+# ==============================================================================
+
+services:
+  # ─────────────────────────────────────────────
+  # 1. Auth Microservice (Port 8001)
+  # ─────────────────────────────────────────────
+  auth_service:
+    build:
+      context: .
+      dockerfile: services/auth_service/Dockerfile
+    container_name: fimms-auth
+    restart: unless-stopped
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - SECRET_KEY=${SECRET_KEY:-fimms-collector-super-secret-key-2026}
+    ports:
+      - "8001:8001"
+
+  # ─────────────────────────────────────────────
+  # 2. AI / RAG Microservice (Port 8002) - Gemini Engine
+  # ─────────────────────────────────────────────
+  ai_service:
+    build:
+      context: .
+      dockerfile: services/ai_service/Dockerfile
+    container_name: fimms-ai
+    restart: unless-stopped
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - LLM_PROVIDER=${LLM_PROVIDER:-gemini}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-1.5-flash}
+      - GEMINI_EMBEDDING_MODEL=${GEMINI_EMBEDDING_MODEL:-text-embedding-004}
+      - NEWS_API_KEY=${NEWS_API_KEY:-}
+    ports:
+      - "8002:8002"
+
+  # ─────────────────────────────────────────────
+  # 3. Core Backend API (Port 8000)
+  # ─────────────────────────────────────────────
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: fimms-backend
+    restart: unless-stopped
+    depends_on:
+      - auth_service
+      - ai_service
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - SECRET_KEY=${SECRET_KEY:-fimms-collector-super-secret-key-2026}
+      - LLM_PROVIDER=${LLM_PROVIDER:-gemini}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-1.5-flash}
+      - GEMINI_EMBEDDING_MODEL=${GEMINI_EMBEDDING_MODEL:-text-embedding-004}
+      - NEWS_API_KEY=${NEWS_API_KEY:-}
+      - S3_BUCKET_NAME=${S3_BUCKET_NAME:-}
+      - S3_REGION=${S3_REGION:-ap-south-1}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-}
+    volumes:
+      - backend_uploads:/app/backend/uploads
+    ports:
+      - "8000:8000"
+
+  # ─────────────────────────────────────────────
+  # 4. React Frontend Web Application (Port 80)
+  # ─────────────────────────────────────────────
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    container_name: fimms-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+
+volumes:
+  backend_uploads:
