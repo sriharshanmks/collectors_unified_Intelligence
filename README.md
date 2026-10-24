@@ -1,4 +1,4 @@
-# 🏛️ FIMMS — Collector's Unified Application
+#  FIMMS — Collector's Unified Application
 
 **Field Inspection & Monitoring Management System** for District Collectors / Magistrates and Citizens.
 
@@ -6,19 +6,19 @@ AI-powered civic intelligence platform with **Google Gemini RAG** (switchable to
 
 ---
 
-## 🏗️ Architecture — Microservices
+##  Architecture — Microservices
 
 ```
 FIMMS System
-├── 🔐 Auth Microservice        (port 8001)  — Registration, Login, JWT, role management
-├── 🤖 AI/RAG Microservice      (port 8002)  — Gemini embeddings, pgvector HNSW, dedup, RAG query
-├── ⚙️  Core Backend FastAPI    (port 8000)  — Entities, Complaints, Collector, Reports, News
-└── 🌐 React Frontend + Nginx  (port 80)    — FIMMS UI (Dashboard, Map, Entities, Users, Reports)
+├──  Auth Microservice        (port 8001)  — Registration, Login, JWT, role management
+├──  AI/RAG Microservice      (port 8002)  — Gemini embeddings, pgvector HNSW, dedup, RAG query
+├──   Core Backend FastAPI    (port 8000)  — Entities, Complaints, Collector, Reports, News
+└──  React Frontend + Nginx  (port 80)    — FIMMS UI (Dashboard, Map, Entities, Users, Reports)
 ```
 
 ---
 
-## 🌟 Key Features
+##  Key Features
 
 | Feature | Description |
 |---|---|
@@ -36,7 +36,7 @@ FIMMS System
 
 ---
 
-## 🚀 Quick Start — Local Development (No Docker)
+##  Quick Start — Local Development (No Docker)
 
 ### Prerequisites
 - Python 3.11+ (tested on 3.14)
@@ -77,7 +77,7 @@ This automatically:
 
 ---
 
-## 🐳 Docker Compose — Full Production Mode
+##  Docker Compose — Full Production Mode
 
 ### Prerequisites
 - Docker Desktop
@@ -121,7 +121,7 @@ docker compose down -v   # also removes database volume
 
 ---
 
-## 🔑 API Reference
+##  API Reference
 
 ### Auth Microservice (Port 8001)
 
@@ -163,7 +163,7 @@ docker compose down -v   # also removes database volume
 
 ---
 
-## 🤖 Switching LLM Provider
+##  Switching LLM Provider
 
 ### Default: Google Gemini
 Set in `.env`:
@@ -191,7 +191,7 @@ curl -X POST http://localhost:8000/api/v1/rag/provider \
 
 ---
 
-## 📊 Database Schema
+##  Database Schema
 
 - **PostgreSQL + pgvector** in production
 - **SQLite** for local development (auto-seeded)
@@ -257,7 +257,7 @@ farmai/
 
 ---
 
-## 🔐 Roles & Access
+##  Roles & Access
 
 | Role | Access Level |
 |------|-------------|
@@ -269,7 +269,7 @@ farmai/
 
 ---
 
-## ⚡ Tech Stack
+##  Tech Stack
 
 | Layer | Technology |
 |-------|-----------|
